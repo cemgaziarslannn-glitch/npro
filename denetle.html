@@ -887,14 +887,25 @@ function checkGuard(){
     findPersonnelProject(tcNo).then(found => {
 
       // ❌ HİÇBİR PROJEDE YOK
-      if(!found){
-        showAlert({
-          title:"Personel Bulunamadı",
-          message:"Bu TC hiçbir projede kayıtlı değil",
-          buttons:[{text:"Tamam"}]
-        });
-        return;
+  // ❌ HİÇBİR PROJEDE YOK
+if(!found){
+  showAlert({
+    title:"Personel Bulunamadı",
+    message:"Bu TC hiçbir projede kayıtlı değil",
+    buttons:[{
+      text:"Tamam",
+      onClick: () => {
+        // Manuel TC girişine geri dön
+        manualPage.classList.remove("hidden");
+        qrPage.classList.add("hidden");
+        manualTc.value = "";
+        manualTc.focus();
       }
+    }]
+  });
+  return;
+}
+
 
       // ⚠️ BAŞKA PROJEDE VAR
 showAlert({
@@ -1971,6 +1982,7 @@ window.addEventListener("touchmove", e => {
 
 </body>
 </html>  
+
 
 
 
