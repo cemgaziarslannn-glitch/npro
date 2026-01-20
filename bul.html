@@ -118,7 +118,7 @@ const body = document.body;
 auth.onAuthStateChanged(user => {
   if(!user){
     alert("Giriş yapmanız gerekiyor");
-    window.location.href = "login.html"; // giriş sayfasına yönlendir
+    window.location.href = "index.html"; // giriş sayfasına yönlendir
   } else {
     // Giriş yapılmışsa sayfayı göster
     body.style.display = "flex";
