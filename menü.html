@@ -144,6 +144,27 @@ body{
   opacity:.85;
   pointer-events:none;
 }
+.wave {
+  display: inline-block;
+  transform-origin: 70% 70%;
+}
+
+@keyframes waveAnim {
+  0% { transform: rotate(0deg); }
+  15% { transform: rotate(14deg); }
+  30% { transform: rotate(-8deg); }
+  40% { transform: rotate(14deg); }
+  50% { transform: rotate(-4deg); }
+  60% { transform: rotate(10deg); }
+  70% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Sadece .animate sınıfı verilince sallar */
+.animate {
+  animation: waveAnim 1s ease-in-out 5;
+}
+
 </style>
 </head>
 
@@ -227,7 +248,7 @@ body{
     <h3>Kimlik Süre Kontrol</h3>
   </div>
 
-  <p>Personelin kimlik geçerlilik sürelerini takip</p>
+  <p>Personelin kimlik geçerlilik sürelerini takip et</p>
 </a>
 <a href="bul.html" class="card"
    onclick="sessionStorage.setItem('menuAllowed','ok')">
@@ -267,21 +288,30 @@ const db   = firebase.database();
 const greetingEl = document.getElementById("greeting");
 const userNameEl = document.getElementById("userName");
 
-auth.onAuthStateChanged(user=>{
+auth.onAuthStateChanged(user => {
   if(!user){
     location.replace("index.html");
     return;
   }
 
-  db.ref("users/"+user.uid).once("value",snap=>{
-    userNameEl.innerText =
-      snap.val()?.fullName ||
-      user.displayName ||
-      user.email.split("@")[0];
+  db.ref("users/"+user.uid).once("value", snap => {
+    const name = snap.val()?.fullName || user.displayName || user.email.split("@")[0];
+    userNameEl.innerText = name;
 
-    greetingEl.innerHTML = getGreeting() + " 👋";
+    // Karşılama + sallayan emoji
+    greetingEl.innerHTML = getGreeting() + ' <span class="wave">👋</span>';
+
+    // Animasyonu tetikle
+    const waveEmoji = greetingEl.querySelector('.wave');
+    waveEmoji.classList.add('animate');
+
+    // Sallama bittiğinde sınıfı kaldır
+    waveEmoji.addEventListener('animationend', () => {
+      waveEmoji.classList.remove('animate');
+    });
   });
 });
+
 
 function getGreeting(){
   const h = new Date().getHours();
@@ -299,5 +329,4 @@ function goIndex(){
 
 </body>
 </html>
-
 
