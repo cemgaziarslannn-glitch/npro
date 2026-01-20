@@ -219,27 +219,15 @@ function loadData(){
           if(d.tarih<r.s.getTime()||d.tarih>r.e.getTime()) return;
 
           const pid=ps.key;
-if(!grouped[pid]) {
-  grouped[pid]={
-    times:[],
-    total:0,
-    ok:0,
-    bad:0,
-    mesaide:0
-  };
-}
+          if(!grouped[pid]) grouped[pid]={times:[],total:0,ok:0,bad:0};
           grouped[pid].times.push(d.tarih);
           grouped[pid].total++; total++;
 
           if(d.durum==="gorevi_basinda"){ grouped[pid].ok++; ok++; }
           else{ grouped[pid].bad++; bad++; }
-		  if(d.mesaide === true){
-  grouped[pid].mesaide++;
-}
         });
       });
     });
-
 
     totalEl.innerText=total;
     okEl.innerText=ok;
@@ -267,13 +255,11 @@ div.innerHTML = `
     <div class="item-time">${s} – ${e}</div>
   </div>
 
- <div class="item-stats">
-  <div>👥 Toplam: <span>${d.total}</span></div>
-  <div>✅ Görevde: <span>${d.ok}</span></div>
-  <div>❌ Uygunsuz: <span>${d.bad}</span></div>
-  <div>🕒 Mesaide: <span>${d.mesaide}</span></div>
-</div>
-
+  <div class="item-stats">
+    <div>👥 Toplam: <span>${d.total}</span></div>
+    <div>✅ Görevde: <span>${d.ok}</span></div>
+    <div>❌ Uygunsuz: <span>${d.bad}</span></div>
+  </div>
 `;
 
 
@@ -313,3 +299,4 @@ window.addEventListener("load", () => {
 </script>
 </body>
 </html>
+
