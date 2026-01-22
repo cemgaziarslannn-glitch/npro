@@ -32,6 +32,24 @@
 <!-- ===== PWA BİTİŞ ===== -->
 
 <style>
+/* PWA INSTALL BUTTON */
+.install-btn{
+  position:fixed;
+  top:12px;
+  right:12px;
+  padding:8px 12px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#22d3ee,#6366f1);
+  color:#020617;
+  font-size:12px;
+  font-weight:800;
+  border:none;
+  cursor:pointer;
+  z-index:999;
+  display:none;
+  box-shadow:0 8px 20px rgba(0,0,0,.4);
+}
+
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;height:100%;overscroll-behavior:none;}
 body{
@@ -150,6 +168,7 @@ button{
 </head>
 
 <body>
+<button id="installBtn" class="install-btn">⬇️ Uygulamayı Yükle</button>
 
 <div class="card">
   <div id="lockIcon" class="lock">🔐</div>
@@ -273,6 +292,33 @@ function resetPassword(){
     .then(()=> show("Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.","success"))
     .catch(()=> show("Bu e-posta bulunamadı"));
 }
+<script>
+let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
+
+/* ANDROID için PWA install yakala */
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = "block";
+});
+
+/* Butona basılınca */
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBtn.style.display = "none";
+});
+
+/* iOS ise butonu gizle */
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+if(isIOS){
+  installBtn.style.display = "none";
+}
+</script>
+
 </script>
 
 </body>
