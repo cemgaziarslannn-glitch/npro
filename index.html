@@ -3,96 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <title>Denetleme Sistemi | Giriş</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#020617">
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&display=swap" rel="stylesheet">
-<link rel="manifest" href="./manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+*{box-sizing:border-box}
 body{
-  margin:0;
-  font-family:Inter,sans-serif;
+  margin:0;height:100%;
+  display:flex;justify-content:center;align-items:center;
   background:radial-gradient(circle at top,#1e3a8a,#020617);
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+  font-family:'Inter',sans-serif;color:#fff;
 }
+
+/* TOP BUTTONS */
+.top-actions{
+  position:fixed;
+  top:12px;right:12px;
+  display:flex;gap:10px;
+}
+.top-actions button{
+  background:rgba(15,23,42,.8);
+  border:1px solid #334155;
+  color:#38bdf8;
+  padding:8px 12px;
+  border-radius:14px;
+  font-weight:700;
+}
+
+/* CARD */
 .card{
-  width:100%;
-  max-width:380px;
-  padding:26px;
-  border-radius:26px;
-  background:rgba(15,23,42,.7);
+  width:100%;max-width:380px;
+  padding:28px;border-radius:26px;
+  background:rgba(15,23,42,.65);
+  backdrop-filter:blur(18px);
+  box-shadow:0 30px 80px rgba(0,0,0,.8);
   text-align:center;
 }
-.lock{font-size:48px;margin-bottom:12px}
-.lock.locking{animation:shake .6s ease-in-out 2}
+
+.lock{font-size:48px;margin-bottom:12px;transition:.4s}
+.lock.locking{animation:shake .6s 2}
 @keyframes shake{
   0%{transform:rotate(15deg)}
-  25%{transform:rotate(-15deg)}
-  50%{transform:rotate(15deg)}
-  75%{transform:rotate(-15deg)}
+  50%{transform:rotate(-15deg)}
   100%{transform:rotate(0)}
 }
+
+h2{margin:0 0 18px;color:#38bdf8}
+
 input{
   width:100%;
-  padding:15px;
-  margin-top:14px;
+  padding:15px;margin-top:14px;
   border-radius:16px;
   background:#020617;
   border:1px solid #334155;
   color:#fff;
 }
-button{
+
+button.main{
   width:100%;
   margin-top:22px;
   padding:16px;
-  border:none;
   border-radius:18px;
   background:linear-gradient(135deg,#38bdf8,#6366f1);
   font-weight:800;
+  border:none;
 }
-.fake{
-  margin-top:14px;
-  padding:14px;
-  border-radius:14px;
-  background:#020617;
-  border:1px solid #334155;
-  color:#94a3b8;
-}
+
 .message{margin-top:16px;font-weight:700}
 .message.error{color:#ff6b6b}
 .message.success{color:#22c55e}
+
+/* SETTINGS */
+.settings{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;justify-content:center;align-items:center;
+}
+.settings .box{
+  background:#020617;
+  padding:24px;
+  border-radius:20px;
+  width:90%;max-width:320px;
+}
+.settings label{
+  display:flex;justify-content:space-between;align-items:center;
+  font-weight:700;
+}
 </style>
 </head>
 
 <body>
 
+<div class="top-actions">
+  <button onclick="installPWA()">⬇️ Uygulama</button>
+  <button onclick="openSettings()">⚙️</button>
+</div>
+
 <div class="card">
-  <div id="lock" class="lock">🔐</div>
-  <h2 id="title">Güvenli Giriş</h2>
+  <div id="lockIcon" class="lock">🔐</div>
+  <h2>Güvenli Giriş</h2>
 
-  <!-- INPUT ALANI -->
-  <div id="loginInputs">
-    <input id="email" type="email" placeholder="E-posta">
-    <input id="password" type="password" placeholder="Şifre">
-  </div>
+  <input id="email" placeholder="E-posta">
+  <input id="password" type="password" placeholder="Şifre">
 
-  <!-- OTOMATİK OTURUM ALANI -->
-  <div id="autoArea" style="display:none">
-    <div class="fake" id="userName"></div>
-    <div class="fake">🔒 Güvenli oturum açılıyor</div>
-    <div class="fake">🛡️ Kimlik doğrulandı</div>
-  </div>
+  <button class="main" onclick="login()">Giriş Yap</button>
 
-  <button onclick="login()">Giriş Yap</button>
   <div id="msg" class="message"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="settings" id="settings">
+  <div class="box">
+    <h3>Ayarlar</h3>
+    <label>
+      Güvenli otomatik giriş
+      <input type="checkbox" id="secureToggle">
+    </label>
+    <br>
+    <button onclick="closeSettings()">Kapat</button>
+  </div>
 </div>
 
 <script>
@@ -100,73 +141,28 @@ firebase.initializeApp({
   apiKey:"AIzaSyCye0QlekBFonTxfeBIlhLc9ia-mleyfUM",
   authDomain:"denetleme-4d3d9.firebaseapp.com",
   databaseURL:"https://denetleme-4d3d9-default-rtdb.firebaseio.com",
-  projectId:"denetleme-4d3d9",
-  appId:"1:584625735764:web:5889dcaadb69c4c78f45c1"
+  projectId:"denetleme-4d3d9"
 });
 
 const email=document.getElementById("email");
 const pass=document.getElementById("password");
 const msg=document.getElementById("msg");
-const lock=document.getElementById("lock");
-const loginInputs=document.getElementById("loginInputs");
-const autoArea=document.getElementById("autoArea");
-const userName=document.getElementById("userName");
+const lock=document.getElementById("lockIcon");
+const toggle=document.getElementById("secureToggle");
 
-function show(t,type="error"){
-  msg.textContent=t;
-  msg.className="message "+type;
+toggle.checked=localStorage.getItem("secureLogin")==="1";
+
+function openSettings(){document.getElementById("settings").style.display="flex"}
+function closeSettings(){
+  localStorage.setItem("secureLogin",toggle.checked?"1":"0");
+  document.getElementById("settings").style.display="none";
 }
 
-/* SAYFA AÇILINCA */
-firebase.auth().onAuthStateChanged(u=>{
-  if(!u) return;
-
-  firebase.database().ref("users/"+u.uid).once("value").then(s=>{
-    if(!s.exists()) return;
-
-    loginInputs.style.display="none";
-    autoArea.style.display="block";
-    userName.textContent="👤 "+s.val().name;
-  });
-});
-
-function login(){
-  const u=firebase.auth().currentUser;
-
-  if(u){
-    // otomatik giriş
-    proceed(u);
-    return;
-  }
-
-  if(!email.value || !pass.value){
-    show("E-posta ve şifre giriniz");
-    return;
-  }
-
-  firebase.auth().signInWithEmailAndPassword(email.value,pass.value)
-    .then(r=>proceed(r.user))
-    .catch(()=>{
-      lock.classList.add("locking");
-      show("E-posta veya şifre hatalı");
-    });
-}
-
-function proceed(user){
-  firebase.database().ref("users/"+user.uid).once("value").then(s=>{
-    if(!s.exists()){
-      show("Yetki yok");
-      return;
-    }
-    lock.textContent="✔️";
-    lock.style.color="#22c55e";
-    show("Giriş başarılı","success");
-    setTimeout(()=>{
-      location.replace(s.val().role==="admin"?"tekadmin.html":"menü.html");
-    },600);
-  });
-}
-</script>
-
-</body>
-</html>
+firebase.auth().onAuthStateChanged(async user=>{
+  if(user && toggle.checked){
+    const snap=await firebase.database().ref("users/"+user.uid).once("value");
+    if(snap.exists()){
+      email.value="Güvenli oturum";
+      pass.value="••••••";
+      msg.textContent=`Kimlik doğrulandı • ${snap.val().name||"Kullanıcı"}`;
+      msg.className="message success";
