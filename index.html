@@ -12,6 +12,24 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!-- ===== PWA / ANDROID + IOS ===== -->
+<link rel="manifest" href="./manifest.json">
+
+<!-- Android -->
+<meta name="theme-color" content="#1e3a8a">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Denetleme Sistemi">
+
+<!-- iOS Icons -->
+<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="./icon-152.png">
+<link rel="apple-touch-icon" sizes="120x120" href="./icon-120.png">
+<link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">
+<!-- ===== PWA BİTİŞ ===== -->
 
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -128,10 +146,29 @@ button{
   opacity:.7;
   pointer-events:none;
 }
+/* PWA INSTALL BUTTON */
+.install-btn{
+  position:fixed;
+  top:12px;
+  right:12px;
+  padding:8px 12px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#22d3ee,#6366f1);
+  color:#020617;
+  font-size:12px;
+  font-weight:800;
+  border:none;
+  cursor:pointer;
+  z-index:999;
+  display:none;
+  box-shadow:0 8px 20px rgba(0,0,0,.4);
+}
+
 </style>
 </head>
 
 <body>
+<button id="installBtn" class="install-btn">⬇️ Uygulamayı Yükle</button>
 
 <div class="card">
   <div id="lockIcon" class="lock">🔐</div>
@@ -254,6 +291,30 @@ function resetPassword(){
   firebase.auth().sendPasswordResetEmail(mail)
     .then(()=> show("Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.","success"))
     .catch(()=> show("Bu e-posta bulunamadı"));
+}
+let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
+
+/* ANDROID için PWA install yakala */
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = "block";
+});
+
+/* Butona basılınca */
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBtn.style.display = "none";
+});
+
+/* iOS ise butonu gizle */
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+if(isIOS){
+  installBtn.style.display = "none";
 }
 </script>
 
