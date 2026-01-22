@@ -18,40 +18,54 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;height:100%;}
 body{
-  margin:0;height:100%;
-  display:flex;justify-content:center;align-items:center;
+  font-family:'Inter',sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:18px;
   background:radial-gradient(circle at top,#1e3a8a,#020617);
-  font-family:'Inter',sans-serif;color:#fff;
+  color:#fff;
 }
 
 /* TOP BUTTONS */
 .top-actions{
   position:fixed;
-  top:12px;right:12px;
-  display:flex;gap:10px;
+  top:12px;
+  right:12px;
+  display:flex;
+  gap:10px;
+  z-index:10;
 }
 .top-actions button{
-  background:rgba(15,23,42,.8);
+  background:rgba(15,23,42,.85);
   border:1px solid #334155;
   color:#38bdf8;
   padding:8px 12px;
   border-radius:14px;
   font-weight:700;
+  cursor:pointer;
 }
 
 /* CARD */
 .card{
-  width:100%;max-width:380px;
-  padding:28px;border-radius:26px;
+  width:100%;
+  max-width:380px;
+  padding:28px 26px 30px;
+  border-radius:26px;
   background:rgba(15,23,42,.65);
   backdrop-filter:blur(18px);
   box-shadow:0 30px 80px rgba(0,0,0,.8);
   text-align:center;
 }
 
-.lock{font-size:48px;margin-bottom:12px;transition:.4s}
+.lock{
+  font-size:50px;
+  margin-bottom:12px;
+  transition:.4s;
+}
 .lock.locking{animation:shake .6s 2}
 @keyframes shake{
   0%{transform:rotate(15deg)}
@@ -63,7 +77,8 @@ h2{margin:0 0 18px;color:#38bdf8}
 
 input{
   width:100%;
-  padding:15px;margin-top:14px;
+  padding:15px 16px;
+  margin-top:14px;
   border-radius:16px;
   background:#020617;
   border:1px solid #334155;
@@ -75,9 +90,23 @@ button.main{
   margin-top:22px;
   padding:16px;
   border-radius:18px;
+  border:none;
   background:linear-gradient(135deg,#38bdf8,#6366f1);
   font-weight:800;
-  border:none;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.bottom-actions{
+  display:flex;
+  justify-content:space-between;
+  margin-top:18px;
+  font-size:13px;
+}
+.bottom-actions a{
+  color:#38bdf8;
+  text-decoration:none;
+  font-weight:600;
 }
 
 .message{margin-top:16px;font-weight:700}
@@ -89,16 +118,21 @@ button.main{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.6);
-  display:none;justify-content:center;align-items:center;
+  display:none;
+  justify-content:center;
+  align-items:center;
 }
 .settings .box{
   background:#020617;
   padding:24px;
   border-radius:20px;
-  width:90%;max-width:320px;
+  width:90%;
+  max-width:320px;
 }
 .settings label{
-  display:flex;justify-content:space-between;align-items:center;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   font-weight:700;
 }
 </style>
@@ -106,6 +140,7 @@ button.main{
 
 <body>
 
+<!-- TOP -->
 <div class="top-actions">
   <button onclick="installPWA()">⬇️ Uygulama</button>
   <button onclick="openSettings()">⚙️</button>
@@ -115,10 +150,16 @@ button.main{
   <div id="lockIcon" class="lock">🔐</div>
   <h2>Güvenli Giriş</h2>
 
-  <input id="email" placeholder="E-posta">
+  <input id="email" type="email" placeholder="E-posta">
   <input id="password" type="password" placeholder="Şifre">
 
   <button class="main" onclick="login()">Giriş Yap</button>
+
+  <!-- ⚠️ SİLİNMEDİ -->
+  <div class="bottom-actions">
+    <a href="kayit.html">➕ Denetçi Hesabı Oluştur</a>
+    <a href="#" onclick="resetPassword()">Şifremi Unuttum</a>
+  </div>
 
   <div id="msg" class="message"></div>
 </div>
@@ -150,9 +191,11 @@ const msg=document.getElementById("msg");
 const lock=document.getElementById("lockIcon");
 const toggle=document.getElementById("secureToggle");
 
-toggle.checked=localStorage.getItem("secureLogin")==="1";
+toggle.checked = localStorage.getItem("secureLogin")==="1";
 
-function openSettings(){document.getElementById("settings").style.display="flex"}
+function openSettings(){
+  document.getElementById("settings").style.display="flex";
+}
 function closeSettings(){
   localStorage.setItem("secureLogin",toggle.checked?"1":"0");
   document.getElementById("settings").style.display="none";
@@ -160,9 +203,37 @@ function closeSettings(){
 
 firebase.auth().onAuthStateChanged(async user=>{
   if(user && toggle.checked){
-    const snap=await firebase.database().ref("users/"+user.uid).once("value");
-    if(snap.exists()){
-      email.value="Güvenli oturum";
-      pass.value="••••••";
-      msg.textContent=`Kimlik doğrulandı • ${snap.val().name||"Kullanıcı"}`;
-      msg.className="message success";
+    email.value="Güvenli oturum";
+    pass.value="••••••";
+    msg.textContent="Kimlik doğrulandı";
+    msg.className="message success";
+  }
+});
+
+function login(){
+  if(toggle.checked && firebase.auth().currentUser){
+    location.replace("menü.html");
+    return;
+  }
+  firebase.auth().signInWithEmailAndPassword(email.value,pass.value)
+    .then(()=>location.replace("menü.html"))
+    .catch(()=>{
+      lock.classList.add("locking");
+      setTimeout(()=>lock.classList.remove("locking"),1000);
+      msg.textContent="E-posta veya şifre hatalı";
+      msg.className="message error";
+    });
+}
+
+/* PWA */
+let deferredPrompt;
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+});
+function installPWA(){
+  if(deferredPrompt) deferredPrompt.prompt();
+}
+</script>
+</body>
+</html>
