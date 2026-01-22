@@ -3,184 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <title>Denetleme Sistemi | Giriş</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#1e3a8a">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<link rel="apple-touch-icon" href="./icon-192.png">
-
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<!-- PWA -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#1e3a8a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Denetleme Sistemi">
+
+<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="./icon-152.png">
+<link rel="apple-touch-icon" sizes="120x120" href="./icon-120.png">
+<link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">
 
 <style>
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overscroll-behavior:none}
+
 body{
-  margin:0;
-  height:100vh;
   font-family:'Inter',sans-serif;
   display:flex;
   justify-content:center;
   align-items:center;
+  padding:18px;
   background:radial-gradient(circle at top,#1e3a8a,#020617);
   color:#fff;
 }
 
-/* 💙 TATLI INSTALL BUTONU */
+/* INSTALL */
 .install-btn{
   position:fixed;
-  top:14px;
-  right:14px;
-  background:rgba(255,255,255,.15);
-  backdrop-filter:blur(10px);
-  border:none;
-  border-radius:14px;
+  top:12px;
+  right:12px;
   padding:8px 12px;
-  font-size:13px;
-  font-weight:700;
-  color:#e0f2fe;
+  border-radius:14px;
+  background:linear-gradient(135deg,#22d3ee,#6366f1);
+  color:#020617;
+  font-size:12px;
+  font-weight:800;
+  border:none;
   cursor:pointer;
+  z-index:999;
   display:none;
-  box-shadow:0 10px 25px rgba(0,0,0,.35);
 }
 
+/* CARD */
 .card{
   width:100%;
-  max-width:360px;
-  background:rgba(15,23,42,.65);
-  padding:28px;
+  max-width:380px;
+  padding:28px 26px 30px;
   border-radius:26px;
+  background:rgba(15,23,42,.65);
   backdrop-filter:blur(18px);
   box-shadow:0 30px 80px rgba(0,0,0,.8);
   text-align:center;
 }
 
+/* LOCK */
 .lock{
-  font-size:48px;
+  font-size:50px;
   margin-bottom:12px;
+  transition:transform .5s,color .5s;
+}
+.lock.locking{
+  animation:lockShake .6s ease-in-out 2;
+  transform:scale(1.3) rotate(15deg)
+}
+@keyframes lockShake{
+  0%{transform:scale(1.3) rotate(15deg)}
+  25%{transform:scale(1.3) rotate(-15deg)}
+  50%{transform:scale(1.3) rotate(15deg)}
+  75%{transform:scale(1.3) rotate(-15deg)}
+  100%{transform:scale(1) rotate(0)}
 }
 
 h2{
   margin:0 0 18px;
+  font-size:24px;
   font-weight:800;
   color:#38bdf8;
 }
 
 input{
   width:100%;
-  padding:14px;
+  padding:15px 16px;
   margin-top:14px;
   border-radius:16px;
-  border:1px solid #334155;
   background:#020617;
+  border:1px solid #334155;
   color:#fff;
+  font-size:15px;
 }
 
-button.login{
+button{
   width:100%;
   margin-top:22px;
-  padding:15px;
+  padding:16px;
   border:none;
   border-radius:18px;
   background:linear-gradient(135deg,#38bdf8,#6366f1);
   font-weight:800;
+  font-size:16px;
   cursor:pointer;
 }
 
-.message{
-  margin-top:16px;
-  font-weight:700;
-  font-size:14px;
+.bottom-actions{
+  display:flex;
+  justify-content:space-between;
+  margin-top:18px;
+  font-size:13px;
 }
-.error{color:#ff6b6b}
-.success{color:#22c55e}
+
+.bottom-actions a{
+  color:#38bdf8;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.message{
+  margin-top:18px;
+  font-weight:700;
+}
+.message.error{color:#ff6b6b}
+.message.success{color:#22c55e}
+
+.footer{
+  position:fixed;
+  right:12px;
+  bottom:12px;
+  font-size:11px;
+  opacity:.7;
+}
 </style>
 </head>
 
 <body>
 
-<button id="installBtn" class="install-btn">📲 Uygulamayı Ekle</button>
+<button id="installBtn" class="install-btn">⬇️ Uygulamayı Yükle</button>
 
 <div class="card">
-  <div class="lock" id="lock">🔐</div>
+  <div id="lockIcon" class="lock">🔐</div>
   <h2>Güvenli Giriş</h2>
 
-  <input id="email" placeholder="E-posta">
+  <input id="email" type="email" placeholder="E-posta">
   <input id="password" type="password" placeholder="Şifre">
 
-  <button class="login" onclick="login()">Giriş Yap</button>
+  <button onclick="login()">Giriş Yap</button>
+
+  <div class="bottom-actions">
+    <a href="kayit.html">➕ Denetçi Hesabı Oluştur</a>
+    <a href="#" onclick="resetPassword()">Şifremi Unuttum</a>
+  </div>
+
   <div id="msg" class="message"></div>
 </div>
 
+<div class="footer">© CGA Güvenlik Sistemi</div>
+
 <script>
 firebase.initializeApp({
-  apiKey: "AIzaSyCye0QlekBFonTxfeBIlhLc9ia-mleyfUM",
-  authDomain: "denetleme-4d3d9.firebaseapp.com",
-  databaseURL: "https://denetleme-4d3d9-default-rtdb.firebaseio.com",
-  projectId: "denetleme-4d3d9"
+  apiKey:"AIzaSyCye0QlekBFonTxfeBIlhLc9ia-mleyfUM",
+  authDomain:"denetleme-4d3d9.firebaseapp.com",
+  databaseURL:"https://denetleme-4d3d9-default-rtdb.firebaseio.com",
+  projectId:"denetleme-4d3d9",
+  storageBucket:"denetleme-4d3d9.appspot.com",
+  messagingSenderId:"584625735764",
+  appId:"1:584625735764:web:5889dcaadb69c4c78f45c1"
 });
 
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-const msg = document.getElementById("msg");
-const lock = document.getElementById("lock");
+const emailInput=document.getElementById("email");
+const passwordInput=document.getElementById("password");
+const msg=document.getElementById("msg");
+const lockIcon=document.getElementById("lockIcon");
 
-function show(t,c="error"){
+function show(t,type="error"){
   msg.textContent=t;
-  msg.className="message "+c;
+  msg.className="message "+type;
 }
 
-function login(){
-  const email = document.getElementById("email").value.trim();
-  const pass = document.getElementById("password").value;
-  if(!email || !pass) return show("Bilgileri giriniz");
-  firebase.auth().signInWithEmailAndPassword(email,pass)
-    .catch(()=>show("E-posta veya şifre hatalı"));
-}
-
-/* 🔐 GERÇEK KONTROL BURADA */
-firebase.auth().onAuthStateChanged(user=>{
-  if(!user) return;
-
-  firebase.database().ref("users/"+user.uid).once("value").then(snap=>{
-    if(!snap.exists()){
-      firebase.auth().signOut();
-      return show("Yetkisiz kullanıcı");
-    }
-
-    const u = snap.val();
-    if(!u.approved){
-      firebase.auth().signOut();
-      return show("Admin onayı bekleniyor");
-    }
-
-    if(u.role==="denetici") location.replace("menü.html");
-    if(u.role==="admin") location.replace("tekadmin.html");
-  });
+firebase.auth().onAuthStateChanged(u=>{
+  if(u){
+    emailInput.value=u.email;
+    lockIcon.textContent="🔒";
+  }
 });
 
-/* 📲 INSTALL */
-let deferredPrompt;
-const installBtn = document.getElementById("installBtn");
+function login(){
+  const mail=emailInput.value.trim();
+  const pass=passwordInput.value;
 
-window.addEventListener("beforeinstallprompt", e=>{
+  if(!mail||!pass){
+    show("E-posta ve şifre giriniz");
+    return;
+  }
+
+  lockIcon.textContent="🔐";
+  lockIcon.classList.remove("locking");
+
+  firebase.auth().signInWithEmailAndPassword(mail,pass)
+  .then(r=>firebase.database().ref("users/"+r.user.uid).once("value"))
+  .then(s=>{
+    if(!s.exists()){
+      show("Kullanıcı bulunamadı");
+      lockIcon.classList.add("locking");
+      firebase.auth().signOut();
+      return;
+    }
+
+    const d=s.val();
+    if(!d.approved||!["denetici","admin"].includes(d.role)){
+      show("Yetki yok");
+      lockIcon.classList.add("locking");
+      firebase.auth().signOut();
+      return;
+    }
+
+    lockIcon.textContent="✔️";
+    lockIcon.style.color="#22c55e";
+    show("Giriş başarılı","success");
+
+    setTimeout(()=>{
+      location.replace(d.role==="admin"?"tekadmin.html":"menü.html");
+    },700);
+  })
+  .catch(()=>{
+    lockIcon.classList.add("locking");
+    show("E-posta veya şifre hatalı");
+  });
+}
+
+function resetPassword(){
+  const m=emailInput.value.trim();
+  if(!m){show("E-posta giriniz");return;}
+  firebase.auth().sendPasswordResetEmail(m)
+  .then(()=>show("Sıfırlama maili gönderildi","success"))
+  .catch(()=>show("E-posta bulunamadı"));
+}
+
+/* PWA */
+let deferredPrompt;
+const installBtn=document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
-  deferredPrompt = e;
+  deferredPrompt=e;
   installBtn.style.display="block";
 });
 
-installBtn.onclick = async ()=>{
-  if(!deferredPrompt) return;
+installBtn.onclick=async()=>{
+  if(!deferredPrompt)return;
   deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
   deferredPrompt=null;
   installBtn.style.display="none";
 };
+
+if(/iphone|ipad|ipod/i.test(navigator.userAgent)){
+  installBtn.style.display="none";
+}
 </script>
 
 </body>
