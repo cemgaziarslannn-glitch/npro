@@ -146,23 +146,40 @@ button{
   opacity:.7;
   pointer-events:none;
 }
-/* PWA INSTALL BUTTON */
+/* PWA INSTALL BUTTON - Estetik versiyon */
 .install-btn{
   position:fixed;
-  top:12px;
-  right:12px;
-  padding:8px 12px;
-  border-radius:14px;
+  top:20px;
+  right:20px;
+  padding:12px 16px;
+  border-radius:50px;
   background:linear-gradient(135deg,#22d3ee,#6366f1);
-  color:#020617;
-  font-size:12px;
-  font-weight:800;
+  color:#fff;
+  font-size:14px;
+  font-weight:700;
   border:none;
   cursor:pointer;
   z-index:999;
   display:none;
-  box-shadow:0 8px 20px rgba(0,0,0,.4);
+  box-shadow:0 6px 18px rgba(0,0,0,0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
 }
+
+/* Hover efekti */
+.install-btn:hover{
+  transform: translateY(-2px);
+  box-shadow:0 10px 24px rgba(0,0,0,0.5);
+  background:linear-gradient(135deg,#38bdf8,#4f46e5);
+}
+
+/* Küçük ekranlarda biraz daha ufak */
+@media(max-width: 400px){
+  .install-btn{
+    padding:10px 14px;
+    font-size:13px;
+  }
+}
+
 
 </style>
 </head>
