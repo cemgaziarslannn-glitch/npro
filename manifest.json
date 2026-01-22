@@ -1,7 +1,8 @@
 {
-  "name": "CGA Güvenlik Sistemi",
+  "name": "CGA Güvenlik Denetleme Sistemi",
   "short_name": "CGA",
-  "start_url": "./index.html",
+  "description": "QR kodlu güvenlik denetleme ve raporlama sistemi",
+  "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#001026",
@@ -9,14 +10,31 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
+      "src": "icon-120.png",
+      "sizes": "120x120",
       "type": "image/png"
     },
     {
-      "src": "./icon-512.png",
-      "sizes": "512x512",
+      "src": "icon-152.png",
+      "sizes": "152x152",
       "type": "image/png"
+    },
+    {
+      "src": "icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
