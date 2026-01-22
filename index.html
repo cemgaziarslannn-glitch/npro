@@ -7,32 +7,19 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#020617">
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<!-- PWA MANIFEST -->
-<link rel="manifest" href="./manifest.json">
-
-<!-- ANDROID / PC -->
-<meta name="theme-color" content="#1e3a8a">
-<meta name="mobile-web-app-capable" content="yes">
-
-<!-- iOS -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="CGA Denetleme">
-
-<!-- iOS ICONLAR -->
-<link rel="apple-touch-icon" sizes="120x120" href="./icon-120.png">
-<link rel="apple-touch-icon" sizes="152x152" href="./icon-152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="./icon-180.png">
-<link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">
 
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{margin:0;height:100%;overscroll-behavior:none;}
+html,body{margin:0;height:100%;}
 body{
   font-family:'Inter',sans-serif;
   display:flex;
@@ -41,6 +28,25 @@ body{
   padding:18px;
   background:radial-gradient(circle at top,#1e3a8a,#020617);
   color:#fff;
+}
+
+/* TOP BUTTONS */
+.top-actions{
+  position:fixed;
+  top:12px;
+  right:12px;
+  display:flex;
+  gap:10px;
+  z-index:10;
+}
+.top-actions button{
+  background:rgba(15,23,42,.85);
+  border:1px solid #334155;
+  color:#38bdf8;
+  padding:8px 12px;
+  border-radius:14px;
+  font-weight:700;
+  cursor:pointer;
 }
 
 /* CARD */
@@ -55,35 +61,20 @@ body{
   text-align:center;
 }
 
-/* LOCK ICON */
-.lock {
+.lock{
   font-size:50px;
-  display:inline-block;
-  transition: transform 0.5s ease, color 0.5s ease;
   margin-bottom:12px;
+  transition:.4s;
 }
-.lock.locking {
-  animation: lockShake 0.6s ease-in-out 2;
-  transform: scale(1.3) rotate(15deg);
-}
-
-@keyframes lockShake {
-  0% { transform: scale(1.3) rotate(15deg); }
-  25% { transform: scale(1.3) rotate(-15deg); }
-  50% { transform: scale(1.3) rotate(15deg); }
-  75% { transform: scale(1.3) rotate(-15deg); }
-  100% { transform: scale(1) rotate(0deg); }
+.lock.locking{animation:shake .6s 2}
+@keyframes shake{
+  0%{transform:rotate(15deg)}
+  50%{transform:rotate(-15deg)}
+  100%{transform:rotate(0)}
 }
 
-/* TITLE */
-h2{
-  margin:0 0 18px;
-  font-weight:800;
-  font-size:24px;
-  color:#38bdf8;
-}
+h2{margin:0 0 18px;color:#38bdf8}
 
-/* INPUT */
 input{
   width:100%;
   padding:15px 16px;
@@ -92,32 +83,25 @@ input{
   background:#020617;
   border:1px solid #334155;
   color:#fff;
-  font-size:15px;
 }
-input::placeholder{color:#94a3b8;}
 
-/* BUTTON */
-button{
+button.main{
   width:100%;
   margin-top:22px;
   padding:16px;
-  border:none;
   border-radius:18px;
+  border:none;
   background:linear-gradient(135deg,#38bdf8,#6366f1);
   font-weight:800;
   font-size:16px;
-  color:#020617;
   cursor:pointer;
 }
 
-/* LINKS */
 .bottom-actions{
   display:flex;
   justify-content:space-between;
-  gap:12px;
   margin-top:18px;
   font-size:13px;
-  white-space:nowrap;
 }
 .bottom-actions a{
   color:#38bdf8;
@@ -125,136 +109,43 @@ button{
   font-weight:600;
 }
 
-/* MESSAGE */
-.message{
-  margin-top:18px;
-  text-align:center;
-  font-weight:700;
-  font-size:14px;
-}
+.message{margin-top:16px;font-weight:700}
 .message.error{color:#ff6b6b}
 .message.success{color:#22c55e}
 
-/* FOOTER */
-.footer{
-  position:fixed;
-  right:12px;
-  bottom:12px;
-  font-size:11px;
-  color:#94a3b8;
-  opacity:.7;
-  pointer-events:none;
-}
-#pwaInstallBtn{
-  position:fixed;
-  top:16px;
-  right:16px;
-  padding:12px 18px;
-  border-radius:14px;
-  border:none;
-  background:linear-gradient(135deg,#22c55e,#16a34a);
-  color:#fff;
-  font-weight:700;
-  font-size:14px;
-  cursor:pointer;
-  box-shadow:0 10px 25px rgba(0,0,0,.35);
-  z-index:9999;
-  animation:pulse 1.6s infinite;
-}
-
-@keyframes pulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.05)}
-  100%{transform:scale(1)}
-}
-/* ⚙️ Ayarlar Butonu */
-#settingsBtn{
-  position:fixed;
-  top:14px;
-  right:14px;
-  font-size:22px;
-  background:rgba(15,23,42,.7);
-  backdrop-filter:blur(10px);
-  border-radius:50%;
-  width:44px;
-  height:44px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  z-index:999;
-}
-
-/* Modal */
-#settingsModal{
+/* SETTINGS */
+.settings{
   position:fixed;
   inset:0;
-  background:rgba(2,6,23,.65);
+  background:rgba(0,0,0,.6);
   display:none;
-  align-items:center;
   justify-content:center;
-  z-index:1000;
+  align-items:center;
 }
-
-.settingsBox{
+.settings .box{
+  background:#020617;
+  padding:24px;
+  border-radius:20px;
   width:90%;
   max-width:320px;
-  background:#020617;
-  border-radius:22px;
-  padding:22px;
-  text-align:center;
 }
-
-/* Switch */
-.switch{
-  position:relative;
-  display:inline-block;
-  width:52px;
-  height:28px;
-  margin-top:14px;
-}
-.switch input{display:none;}
-.slider{
-  position:absolute;
-  cursor:pointer;
-  inset:0;
-  background:#334155;
-  border-radius:28px;
-  transition:.3s;
-}
-.slider:before{
-  content:"";
-  position:absolute;
-  width:22px;
-  height:22px;
-  left:3px;
-  top:3px;
-  background:#fff;
-  border-radius:50%;
-  transition:.3s;
-}
-input:checked + .slider{
-  background:#38bdf8;
-}
-input:checked + .slider:before{
-  transform:translateX(24px);
-}
-
-.switchText{
-  display:block;
-  margin-top:10px;
+.settings label{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   font-weight:700;
-  color:#e5e7eb;
 }
-
 </style>
 </head>
 
 <body>
-<div id="settingsBtn">⚙️</div>
-<button id="pwaInstallBtn" style="display:none">
-  📲 Uygulamayı Yükle
-</button>
+
+<!-- TOP -->
+<div class="top-actions">
+  <button onclick="installPWA()">⬇️ Uygulama</button>
+  <button onclick="openSettings()">⚙️</button>
+</div>
+
 <div class="card">
   <div id="lockIcon" class="lock">🔐</div>
   <h2>Güvenli Giriş</h2>
@@ -262,8 +153,9 @@ input:checked + .slider:before{
   <input id="email" type="email" placeholder="E-posta">
   <input id="password" type="password" placeholder="Şifre">
 
-  <button onclick="login()">Giriş Yap</button>
+  <button class="main" onclick="login()">Giriş Yap</button>
 
+  <!-- ⚠️ SİLİNMEDİ -->
   <div class="bottom-actions">
     <a href="kayit.html">➕ Denetçi Hesabı Oluştur</a>
     <a href="#" onclick="resetPassword()">Şifremi Unuttum</a>
@@ -272,165 +164,76 @@ input:checked + .slider:before{
   <div id="msg" class="message"></div>
 </div>
 
-<div class="footer">© CGA Güvenlik Sistemi</div>
+<!-- SETTINGS -->
+<div class="settings" id="settings">
+  <div class="box">
+    <h3>Ayarlar</h3>
+    <label>
+      Güvenli otomatik giriş
+      <input type="checkbox" id="secureToggle">
+    </label>
+    <br>
+    <button onclick="closeSettings()">Kapat</button>
+  </div>
+</div>
 
 <script>
 firebase.initializeApp({
-  apiKey: "AIzaSyCye0QlekBFonTxfeBIlhLc9ia-mleyfUM",
-  authDomain: "denetleme-4d3d9.firebaseapp.com",
-  databaseURL: "https://denetleme-4d3d9-default-rtdb.firebaseio.com",
-  projectId: "denetleme-4d3d9",
-  storageBucket: "denetleme-4d3d9.appspot.com",
-  messagingSenderId: "584625735764",
-  appId: "1:584625735764:web:5889dcaadb69c4c78f45c1"
+  apiKey:"AIzaSyCye0QlekBFonTxfeBIlhLc9ia-mleyfUM",
+  authDomain:"denetleme-4d3d9.firebaseapp.com",
+  databaseURL:"https://denetleme-4d3d9-default-rtdb.firebaseio.com",
+  projectId:"denetleme-4d3d9"
 });
 
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+const email=document.getElementById("email");
+const pass=document.getElementById("password");
+const msg=document.getElementById("msg");
+const lock=document.getElementById("lockIcon");
+const toggle=document.getElementById("secureToggle");
 
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const msg = document.getElementById("msg");
-const lockIcon = document.getElementById("lockIcon");
+toggle.checked = localStorage.getItem("secureLogin")==="1";
 
-function show(text,type="error"){
-  msg.textContent=text;
-  msg.className="message "+type;
+function openSettings(){
+  document.getElementById("settings").style.display="flex";
+}
+function closeSettings(){
+  localStorage.setItem("secureLogin",toggle.checked?"1":"0");
+  document.getElementById("settings").style.display="none";
 }
 
-/* Sayfa açıldığında girişli kullanıcı varsa maili input’a koy */
-firebase.auth().onAuthStateChanged(user=>{
-  if(user){
-    emailInput.value = user.email;
-    lockIcon.textContent = "🔒"; // kilitli
+firebase.auth().onAuthStateChanged(async user=>{
+  if(user && toggle.checked){
+    email.value="Güvenli oturum";
+    pass.value="••••••";
+    msg.textContent="Kimlik doğrulandı";
+    msg.className="message success";
   }
 });
 
 function login(){
-  const mail = emailInput.value.trim();
-  const pass = passwordInput.value;
-
-  if(!mail || !pass){
-    show("E-posta ve şifre giriniz");
+  if(toggle.checked && firebase.auth().currentUser){
+    location.replace("menü.html");
     return;
   }
-
-  // 🔒 Kilit normal durumda (animasyon yok)
-  lockIcon.textContent = "🔐";
-  lockIcon.style.color = "#fff";
-  lockIcon.classList.remove("locking");
-
-  firebase.auth().signInWithEmailAndPassword(mail, pass)
-    .then(res => firebase.database().ref("users/" + res.user.uid).once("value"))
-    .then(snap => {
-      if(!snap.exists()){
-        show("Kullanıcı bulunamadı");
-        // Yanlış → animasyon oynat
-        lockIcon.classList.add("locking");
-        setTimeout(()=> lockIcon.classList.remove("locking"), 1200);
-        firebase.auth().signOut();
-        return;
-      }
-
-      const data = snap.val();
-
-      if(!data.approved){
-        show("Admin onayı bekleniyor");
-        lockIcon.classList.add("locking");
-        setTimeout(()=> lockIcon.classList.remove("locking"), 1200);
-        firebase.auth().signOut();
-        return;
-      }
-
-      // 🔑 Rol kontrolü
-      if(data.role !== "denetici" && data.role !== "admin"){
-        show("Bu sayfaya giriş yetkiniz yok");
-        lockIcon.classList.add("locking");
-        setTimeout(()=> lockIcon.classList.remove("locking"), 1200);
-        firebase.auth().signOut();
-        return;
-      }
-
-      // ✅ Doğru giriş → direkt tik simgesi
-      lockIcon.textContent = "✔️";
-      lockIcon.style.color = "#22c55e";
-      show(`Giriş başarılı (${data.role})`, "success");
-      localStorage.setItem("canEnterApp", "yes");
-
-      setTimeout(()=>{
-        if(data.role === "denetici") location.replace("menü.html");
-        else if(data.role === "admin") location.replace("tekadmin.html");
-      }, 700);
-
-    })
+  firebase.auth().signInWithEmailAndPassword(email.value,pass.value)
+    .then(()=>location.replace("menü.html"))
     .catch(()=>{
-      // 🔓 Yanlış şifre/mail → animasyon
-      lockIcon.classList.add("locking");
-      setTimeout(()=> lockIcon.classList.remove("locking"), 1200);
-      show("E-posta veya şifre hatalı");
+      lock.classList.add("locking");
+      setTimeout(()=>lock.classList.remove("locking"),1000);
+      msg.textContent="E-posta veya şifre hatalı";
+      msg.className="message error";
     });
 }
 
-function resetPassword(){
-  const mail=emailInput.value.trim();
-  if(!mail){ show("E-posta giriniz"); return; }
-  firebase.auth().sendPasswordResetEmail(mail)
-    .then(()=> show("Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.","success"))
-    .catch(()=> show("Bu e-posta bulunamadı"));
-}
+/* PWA */
 let deferredPrompt;
-const installBtn = document.getElementById("pwaInstallBtn");
-
-/* TARAYICI YÜKLEMEYE UYGUNSA */
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault(); // otomatik popup’ı engelle
-  deferredPrompt = e;
-  installBtn.style.display = "block"; // butonu göster
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  deferredPrompt=e;
 });
-
-/* BUTONA BASILINCA */
-installBtn.addEventListener("click", async () => {
-  if(!deferredPrompt) return;
-
-  deferredPrompt.prompt(); // sistem popup açılır
-  await deferredPrompt.userChoice;
-
-  deferredPrompt = null;
-  installBtn.style.display = "none"; // basınca kaybolur
-});
-const settingsBtn = document.getElementById("settingsBtn");
-const settingsModal = document.getElementById("settingsModal");
-const secureToggle = document.getElementById("secureToggle");
-
-settingsBtn.onclick = () => {
-  settingsModal.style.display = "flex";
-  secureToggle.checked = localStorage.getItem("secureLogin") === "on";
-};
-
-function closeSettings(){
-  settingsModal.style.display = "none";
+function installPWA(){
+  if(deferredPrompt) deferredPrompt.prompt();
 }
-
-secureToggle.onchange = () => {
-  localStorage.setItem(
-    "secureLogin",
-    secureToggle.checked ? "on" : "off"
-  );
-};
-
 </script>
-<div id="settingsModal">
-  <div class="settingsBox">
-    <h3>⚙️ Ayarlar</h3>
-
-    <label class="switch">
-      <input type="checkbox" id="secureToggle">
-      <span class="slider"></span>
-    </label>
-    <span class="switchText">Güvenli giriş (otomatik)</span>
-
-<button id="closeSettingsBtn">Kapat</button>
-  </div>
-</div>
-
 </body>
 </html>
