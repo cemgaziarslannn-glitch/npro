@@ -297,10 +297,11 @@ function show(text,type="error"){
   msg.className="message "+type;
 }
 
+/* Sayfa açıldığında girişli kullanıcı varsa maili input’a koy */
 firebase.auth().onAuthStateChanged(user=>{
   if(user){
     emailInput.value = user.email;
-    lockIcon.textContent = "🔒";
+    lockIcon.textContent = "🔒"; // kilitli
   }
 });
 
@@ -313,6 +314,7 @@ function login(){
     return;
   }
 
+  // 🔒 Kilit normal durumda (animasyon yok)
   lockIcon.textContent = "🔐";
   lockIcon.style.color = "#fff";
   lockIcon.classList.remove("locking");
@@ -322,6 +324,7 @@ function login(){
     .then(snap => {
       if(!snap.exists()){
         show("Kullanıcı bulunamadı");
+        // Yanlış → animasyon oynat
         lockIcon.classList.add("locking");
         setTimeout(()=> lockIcon.classList.remove("locking"), 1200);
         firebase.auth().signOut();
@@ -338,6 +341,7 @@ function login(){
         return;
       }
 
+      // 🔑 Rol kontrolü
       if(data.role !== "denetici" && data.role !== "admin"){
         show("Bu sayfaya giriş yetkiniz yok");
         lockIcon.classList.add("locking");
@@ -346,6 +350,7 @@ function login(){
         return;
       }
 
+      // ✅ Doğru giriş → direkt tik simgesi
       lockIcon.textContent = "✔️";
       lockIcon.style.color = "#22c55e";
       show(`Giriş başarılı (${data.role})`, "success");
@@ -358,6 +363,7 @@ function login(){
 
     })
     .catch(()=>{
+      // 🔓 Yanlış şifre/mail → animasyon
       lockIcon.classList.add("locking");
       setTimeout(()=> lockIcon.classList.remove("locking"), 1200);
       show("E-posta veya şifre hatalı");
@@ -371,38 +377,45 @@ function resetPassword(){
     .then(()=> show("Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.","success"))
     .catch(()=> show("Bu e-posta bulunamadı"));
 }
-
 let deferredPrompt;
 const installBtn = document.getElementById("pwaInstallBtn");
 
+/* TARAYICI YÜKLEMEYE UYGUNSA */
 window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
+  e.preventDefault(); // otomatik popup’ı engelle
   deferredPrompt = e;
-  installBtn.style.display = "block";
+  installBtn.style.display = "block"; // butonu göster
 });
 
+/* BUTONA BASILINCA */
 installBtn.addEventListener("click", async () => {
   if(!deferredPrompt) return;
 
-  deferredPrompt.prompt();
+  deferredPrompt.prompt(); // sistem popup açılır
   await deferredPrompt.userChoice;
 
   deferredPrompt = null;
-  installBtn.style.display = "none";
+  installBtn.style.display = "none"; // basınca kaybolur
 });
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsModal = document.getElementById("settingsModal");
+const secureToggle = document.getElementById("secureToggle");
 
-/* =================== BURASI EKLENDİ =================== */
-document.getElementById("settingsBtn").onclick = function() {
-  document.getElementById("settingsModal").style.display = "flex";
-  document.getElementById("secureToggle").checked = localStorage.getItem("secureLogin") === "on";
+settingsBtn.onclick = () => {
+  settingsModal.style.display = "flex";
+  secureToggle.checked = localStorage.getItem("secureLogin") === "on";
 };
-document.getElementById("closeSettingsBtn").addEventListener("click", function() {
-  document.getElementById("settingsModal").style.display = "none";
-});
-document.getElementById("secureToggle").onchange = function() {
-  localStorage.setItem("secureLogin", this.checked ? "on" : "off");
+
+function closeSettings(){
+  settingsModal.style.display = "none";
+}
+
+secureToggle.onchange = () => {
+  localStorage.setItem(
+    "secureLogin",
+    secureToggle.checked ? "on" : "off"
+  );
 };
-/* ======================================================== */
 
 </script>
 <div id="settingsModal">
@@ -415,7 +428,7 @@ document.getElementById("secureToggle").onchange = function() {
     </label>
     <span class="switchText">Güvenli giriş (otomatik)</span>
 
-    <button id="closeSettingsBtn">Kapat</button>
+<button id="closeSettingsBtn">Kapat</button>
   </div>
 </div>
 
