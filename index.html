@@ -292,7 +292,7 @@ function resetPassword(){
     .then(()=> show("Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.","success"))
     .catch(()=> show("Bu e-posta bulunamadı"));
 }
-<script>
+
 let deferredPrompt;
 const installBtn = document.getElementById("installBtn");
 
@@ -317,7 +317,7 @@ const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 if(isIOS){
   installBtn.style.display = "none";
 }
-</script>
+
 
 </script>
 
