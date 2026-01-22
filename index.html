@@ -146,14 +146,14 @@ button{
   opacity:.7;
   pointer-events:none;
 }
-/* PWA INSTALL BUTTON - Estetik versiyon */
+/* PWA INSTALL BUTTON - Tatlı ve modern */
 .install-btn{
   position:fixed;
   top:20px;
   right:20px;
-  padding:12px 16px;
+  padding:12px 18px;
   border-radius:50px;
-  background:linear-gradient(135deg,#22d3ee,#6366f1);
+  background:linear-gradient(135deg,#38bdf8,#6366f1);
   color:#fff;
   font-size:14px;
   font-weight:700;
@@ -165,14 +165,14 @@ button{
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
 }
 
-/* Hover efekti */
+/* Hover efekti - biraz zıplatıyoruz */
 .install-btn:hover{
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.05);
   box-shadow:0 10px 24px rgba(0,0,0,0.5);
-  background:linear-gradient(135deg,#38bdf8,#4f46e5);
+  background:linear-gradient(135deg,#22d3ee,#4f46e5);
 }
 
-/* Küçük ekranlarda biraz daha ufak */
+/* Küçük ekranlarda biraz daha ufak ve uyumlu */
 @media(max-width: 400px){
   .install-btn{
     padding:10px 14px;
@@ -181,11 +181,12 @@ button{
 }
 
 
+
 </style>
 </head>
 
 <body>
-<button id="installBtn" class="install-btn">⬇️ Uygulamayı Yükle</button>
+<button id="installBtn" class="install-btn">📲 Uygulamayı Yükle</button>
 
 <div class="card">
   <div id="lockIcon" class="lock">🔐</div>
