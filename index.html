@@ -376,7 +376,7 @@ firebase.auth().onAuthStateChanged(user => {
       passwordInput.value = "••••••••";
       lockIcon.textContent = "🔒";
       lockIcon.style.color = "#fff";
-      show("Güvenli mod etkin. Giriş için butona basınız.", "success");
+      show("Güvenli Mod Etkin Giriş Yapınız.", "success");
     } else {
       updateSafeModeColors();
       emailInput.value = user.email || "";
