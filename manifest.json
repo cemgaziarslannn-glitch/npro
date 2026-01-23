@@ -1,6 +1,6 @@
 {
-  "name": "CGA Güvenlik Denetleme Sistemi",
-  "short_name": "CGA",
+  "name": "CGA Denetleme Sistemi",
+  "short_name": "CGA Denetleme Sistemi",
   "description": "QR kodlu güvenlik denetleme ve raporlama sistemi",
   "start_url": "index.html",
   "scope": "./",
